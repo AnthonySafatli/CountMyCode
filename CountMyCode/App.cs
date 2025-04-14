@@ -17,7 +17,7 @@ namespace CountMyCode
 
         public void Run()
         {
-            initialFolder.DisplayMenu();
+            initialFolder.Menu();
         }
     }
 }

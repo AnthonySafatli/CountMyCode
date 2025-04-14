@@ -8,10 +8,11 @@ namespace CountMyCode
         {
             Console.WriteLine("Enter the path to the directory you want to analyze:");
             string? initialPath = Console.ReadLine();
-
-            if (initialPath == null)
+            
+            if (string.IsNullOrWhiteSpace(initialPath))
             {
-                throw new ArgumentNullException(nameof(initialPath));
+                // initialPath = Environment.CurrentDirectory;
+                initialPath = "C:\\Users\\Anthony\\source\\repos\\CountMyCode";
             }
 
             App app = new App(initialPath);
