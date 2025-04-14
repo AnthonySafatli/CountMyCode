@@ -106,7 +106,8 @@ namespace CountMyCode.Models
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Enter)
                 {
-                    return;
+                    if (Parent == null)
+                        return;
                 }
             }
         }
@@ -146,15 +147,6 @@ namespace CountMyCode.Models
             Console.WriteLine();
         }
 
-        private void RenderBackToParent(FileItem? selectedFileItem)
-        {
-            if (Parent != null)
-            {
-                Console.ForegroundColor = selectedFileItem == null ? ConsoleColor.Green : ConsoleColor.White;
-                Console.WriteLine("[..] Back to parent");
-            }
-        }
-
         private void RenderFileItem(FileItem fileItem, FileItem? selectedFileItem)
         {
             if (fileItem.Status == Status.Ignored)
@@ -176,12 +168,15 @@ namespace CountMyCode.Models
             Console.WriteLine();
 
             if (Children.Count > 1)
-                Console.WriteLine("UP / DOWN | Navigate up or down");
+                Console.WriteLine("UP / DOWN   | Navigate up or down");
             if (Children.Any(x => x.ItemType == Status.Folder))
-                Console.WriteLine("RIGHT     | Enter a folder to view its contents");
+                Console.WriteLine("RIGHT       | Enter a folder to view its contents");
             if (Parent != null)
-                Console.WriteLine("LEFT      | Go back to the folders parents");
-            Console.WriteLine("SPACE     | Toggle if an item is ignored by the audit");
+                Console.WriteLine("LEFT        | Go back to the folders parents");
+            if (Children.Count > 0)
+                Console.WriteLine("SPACE       | Toggle if an item is ignored by the audit"); 
+            if (Parent == null)
+                Console.WriteLine("ESC / ENTER | Run the audit");
         }
 
         internal string GetLanguageName(string extension)
