@@ -4,7 +4,14 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            string initialPath = Environment.CurrentDirectory;
+            if (args.Length > 0)
+            {
+                initialPath = args[0];
+            }
+
+            App app = new App(initialPath);
+            app.Run();
         }
     }
 }
