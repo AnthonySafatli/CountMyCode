@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace CountMyCode
+namespace CountMyCode.Models
 {
     internal class FileItem
     {
