@@ -215,6 +215,9 @@ namespace CountMyCode.Models
             List<string> extensions = new List<string>();
             foreach (FileItem item in Children)
             {
+                if (item.Status == Status.Ignored)
+                    continue;
+
                 if (item.ItemType == Status.File)
                 {
                     string extension = System.IO.Path.GetExtension(item.Path);
