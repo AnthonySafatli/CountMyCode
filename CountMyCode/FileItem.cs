@@ -7,13 +7,13 @@ namespace CountMyCode
     internal class FileItem
     {
         private bool childrenLoaded = false;
-        public FileItem? Parent { get; set; }
-        public string Path { get; set; }
-        public Status ItemType { get; set; }
-        public Status Status { get; set; }
-        public List<FileItem> Children { get; set; } = new List<FileItem>();
+        internal FileItem? Parent { get; set; }
+        internal string Path { get; set; }
+        internal Status ItemType { get; set; }
+        internal Status Status { get; set; }
+        internal List<FileItem> Children { get; set; } = new List<FileItem>();
 
-        public string DisplayName
+        internal string DisplayName
         {
             get
             {
@@ -21,7 +21,7 @@ namespace CountMyCode
             }
         }
 
-        public FileItem(FileItem parent, string path, Status status)
+        internal FileItem(FileItem parent, string path, Status status)
         {
             Parent = parent;
             Path = path;
@@ -29,7 +29,7 @@ namespace CountMyCode
             ItemType = status;
         }
 
-        public FileItem(string path, Status status)
+        internal FileItem(string path, Status status)
             : this(null, path, status) { }
 
         private void LoadChildren()
@@ -50,7 +50,7 @@ namespace CountMyCode
             childrenLoaded = true;
         }
 
-        public void Menu()
+        internal void RunMenu()
         {
             Console.Clear();
 
@@ -90,7 +90,7 @@ namespace CountMyCode
                 else if (keyInfo.Key == ConsoleKey.RightArrow)
                 {
                     if (selectedFileItem?.ItemType == Status.Folder)
-                        selectedFileItem.Menu();
+                        selectedFileItem.RunMenu();
                 }
                 else if (keyInfo.Key == ConsoleKey.LeftArrow)
                 {
@@ -104,10 +104,14 @@ namespace CountMyCode
 
                     ToggleIgnore(selectedFileItem);
                 }
+                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Enter)
+                {
+                    return;
+                }
             }
         }
         
-        public void ToggleIgnore(FileItem? item)
+        private void ToggleIgnore(FileItem? item)
         {
             if (item == null)
                 return;
@@ -115,7 +119,7 @@ namespace CountMyCode
             item.Status = item.Status == Status.Ignored ? item.ItemType : Status.Ignored;
         }
 
-        public void RenderMenu(FileItem? selectedFileItem)
+        private void RenderMenu(FileItem? selectedFileItem)
         {
             Console.Clear();
 
@@ -135,14 +139,14 @@ namespace CountMyCode
             RenderInstructions();
         }
 
-        public void RenderHeader()
+        private void RenderHeader()
         {
             Console.ForegroundColor = Parent == null ? ConsoleColor.DarkCyan : ConsoleColor.Cyan;
             Console.WriteLine("| " + Path);
             Console.WriteLine();
         }
 
-        public void RenderBackToParent(FileItem? selectedFileItem)
+        private void RenderBackToParent(FileItem? selectedFileItem)
         {
             if (Parent != null)
             {
@@ -151,7 +155,7 @@ namespace CountMyCode
             }
         }
 
-        public void RenderFileItem(FileItem fileItem, FileItem? selectedFileItem)
+        private void RenderFileItem(FileItem fileItem, FileItem? selectedFileItem)
         {
             if (fileItem.Status == Status.Ignored)
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -166,7 +170,7 @@ namespace CountMyCode
             Console.WriteLine(fileItem.DisplayName);
         }
 
-        public void RenderInstructions()
+        private void RenderInstructions()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine();
@@ -178,6 +182,70 @@ namespace CountMyCode
             if (Parent != null)
                 Console.WriteLine("LEFT      | Go back to the folders parents");
             Console.WriteLine("SPACE     | Toggle if an item is ignored by the audit");
+        }
+
+        internal string GetLanguageName(string extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension))
+                throw new ArgumentException("Extension cannot be null or empty.", nameof(extension));
+
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write($"Please enter a name for this language: ");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine(extension);
+
+            while (true)
+            {
+                string? fileName = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    Console.WriteLine("No name entered. Try again.");
+                    Console.WriteLine();
+                }
+                else
+                {
+                    return fileName;
+                }
+            }
+        }
+
+        internal List<string> GetExtensions()
+        {
+            List<string> extensions = new List<string>();
+            foreach (FileItem item in Children)
+            {
+                if (item.ItemType == Status.File)
+                {
+                    string extension = System.IO.Path.GetExtension(item.Path);
+                    if (!extensions.Contains(extension) && !string.IsNullOrWhiteSpace(extension))
+                        extensions.Add(extension);
+                }
+                else if (item.ItemType == Status.Folder)
+                {
+                    extensions.AddRange(item.GetExtensions());
+                }
+            }
+            return extensions;
+        }
+
+        internal void AddExtensions(Dictionary<string, string> programmingExtensions)
+        {
+            List<string> extensions = GetExtensions();
+
+            foreach (string extension in extensions)
+            {
+                if (!programmingExtensions.ContainsKey(extension))
+                {
+                    string fileName = GetLanguageName(extension);
+                    programmingExtensions.Add(extension, fileName);
+                }
+            }
         }
     }
 }
