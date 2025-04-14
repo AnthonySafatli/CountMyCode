@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountMyCode", "CountMyCode\CountMyCode.csproj", "{B9E97809-6CBD-458C-B454-3CE68C741DDF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9E97809-6CBD-458C-B454-3CE68C741DDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E97809-6CBD-458C-B454-3CE68C741DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E97809-6CBD-458C-B454-3CE68C741DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E97809-6CBD-458C-B454-3CE68C741DDF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5343F47F-F453-420E-BEB5-3435E34744E0}
+	EndGlobalSection
+EndGlobal
