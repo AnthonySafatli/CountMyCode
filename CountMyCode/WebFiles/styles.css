@@ -1,0 +1,7 @@
+.text-light > .text-muted {
+    color: #bbb !important; /* lighter muted color for light text */
+}
+
+.text-light h4 {
+    color: #888 !important;
+}
