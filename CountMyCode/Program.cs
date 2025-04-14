@@ -1,17 +1,23 @@
-﻿namespace CountMyCode
+﻿using System.IO;
+
+namespace CountMyCode
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            string initialPath = Environment.CurrentDirectory;
-            if (args.Length > 0)
+            Console.WriteLine("Enter the path to the directory you want to analyze:");
+            string? initialPath = Console.ReadLine();
+
+            if (initialPath == null)
             {
-                initialPath = args[0];
+                throw new ArgumentNullException(nameof(initialPath));
             }
 
             App app = new App(initialPath);
             app.Run();
+
+            Console.ReadLine();
         }
     }
 }

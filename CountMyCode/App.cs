@@ -8,18 +8,16 @@ namespace CountMyCode
 {
     internal class App
     {
-        readonly string _initialPath;
+        private FileItem initialFolder;
 
-        public App(string initalPath)
+        public App(string initialPath)
         {
-            _initialPath = initalPath;
+            initialFolder = new FileItem(initialPath, Status.Folder);
         }
 
         public void Run()
         {
-            Console.WriteLine("Hello, World!");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            initialFolder.DisplayMenu();
         }
     }
 }

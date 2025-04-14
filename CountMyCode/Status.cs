@@ -8,9 +8,8 @@ namespace CountMyCode
 {
     internal enum Status
     {
-        Counted,
+        Folder,
+        File,
         Ignored,
-        ViewChildren,
-        File
     }
 }
