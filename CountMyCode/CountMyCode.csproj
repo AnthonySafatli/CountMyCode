@@ -10,5 +10,12 @@
   <ItemGroup>
     <Folder Include="WebFiles\images\" />
   </ItemGroup>
+	
+<ItemGroup>
+    <Content Include="WebFiles\**\*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+</ItemGroup>
+
 
 </Project>

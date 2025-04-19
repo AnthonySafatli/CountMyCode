@@ -10,12 +10,13 @@ namespace CountMyCode.Models
     {
         public int Files { get; set; }
         public int LinesOfCode { get; set; }
+        public int Characters { get; set; }
         public int Languages { get; set; }
-        public int MbOfCode { get; set; }
+        public double MbOfCode { get; set; }
         public int Todos { get; set; }
-        public int AvgLinesPerFile { get; set; }
-        public int AvgCharsPerFile { get; set; }
-        public int AvgMbPerFile { get; set; }
+        public double AvgLinesPerFile => Files == 0 ? 0 : (double) LinesOfCode / Files;
+        public double AvgCharsPerFile => Files == 0 ? 0 : (double) Characters / Files;
+        public double AvgMbPerFile => Files == 0 ? 0 : (double) MbOfCode / Files;
 
         public int EmptyLinesVs { get; set; }
         public int WhiteSpaceVs { get; set; }
@@ -31,6 +32,6 @@ namespace CountMyCode.Models
         public int OldestFileDays { get; set; }
         public string OldestFile { get; set; } = string.Empty;
         public int NewestFileDays { get; set; }
-        public int NewestFile { get; set; }
+        public string NewestFile { get; set; }
     }
 }

@@ -1,9 +1,14 @@
 ﻿using CountMyCode.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
+using System.Xml.Linq;
 
 namespace CountMyCode
 {
@@ -18,15 +23,29 @@ namespace CountMyCode
             _programmingExtensions = InitializeProgrammingExtensions();
         }
 
-        internal void Run()
+        internal async Task Run()
         {
             _initialFolder.RunMenu();
 
             _initialFolder.AddExtensions(_programmingExtensions);
 
-            AuditStats stats = _initialFolder.GetStats();
+            AuditStats stats = await _initialFolder.RunAudit();
 
-            Console.Clear();
+            LaunchAudit(stats);
+        }
+
+        internal void LaunchAudit(AuditStats audit)
+        {
+            string json = JsonSerializer.Serialize(audit);
+            string encodedJson = HttpUtility.UrlEncode(json);
+
+            string basePath = AppContext.BaseDirectory;
+            string htmlPath = Path.Combine(basePath, "WebFiles", "index.html");
+            string url = $"file:///{htmlPath.Replace("\\", "/")}?data={encodedJson}";
+
+            Console.WriteLine($"Opening {url}");
+
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
 
         private Dictionary<string, string> InitializeProgrammingExtensions()

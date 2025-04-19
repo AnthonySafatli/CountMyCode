@@ -4,7 +4,7 @@ namespace CountMyCode
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Enter the path to the directory you want to analyze:");
             string? initialPath = Console.ReadLine();
@@ -16,7 +16,7 @@ namespace CountMyCode
             }
 
             App app = new App(initialPath);
-            app.Run();
+            await app.Run();
 
             Console.ReadLine();
         }

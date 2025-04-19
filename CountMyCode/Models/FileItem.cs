@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CountMyCode.Utils;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 namespace CountMyCode.Models
@@ -246,9 +248,148 @@ namespace CountMyCode.Models
             }
         }
 
-        internal AuditStats GetStats()
+        internal List<FileItem> GetFiles()
         {
-            throw new NotImplementedException();
+            if (!childrenLoaded)
+                LoadChildren();
+
+            List<FileItem> files = new List<FileItem>();
+
+            foreach (FileItem item in Children)
+            {
+                if (item.Status == Status.Ignored)
+                    continue;
+
+                if (item.ItemType == Status.File)
+                {
+                    files.Add(item);
+                }
+                else if (item.ItemType == Status.Folder)
+                {
+                    files.AddRange(item.GetFiles());
+                }
+            }
+
+            return files;
+        }
+
+        internal async Task<AuditStats> ProcessFileAsync(string path)
+        {
+            AuditStats audit = new AuditStats();
+
+            await foreach (var line in FileUtils.ReadLinesAsync(path))
+            {
+                audit.LinesOfCode++;
+                audit.Characters += line.Length;
+
+                if (line.Contains("TODO", StringComparison.OrdinalIgnoreCase)
+                    || line.Contains("FIXEME", StringComparison.OrdinalIgnoreCase)
+                    || line.Contains("HACK", StringComparison.OrdinalIgnoreCase))
+                {
+                    audit.Todos++;
+                }
+
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    audit.EmptyLinesVs++;
+                }
+
+                audit.WhiteSpaceVs += line.Count(c => string.IsNullOrWhiteSpace(c.ToString()));
+            }
+
+            return audit;
+        }
+
+        internal async Task<AuditStats> RunAudit()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Running the audit. Counting your code. Please wait...");
+
+            List<FileItem> files = GetFiles();
+            
+            List<Task<AuditStats>> auditTasks = new List<Task<AuditStats>>();
+            List<FileInfo> fileInfos = new List<FileInfo>();
+
+            foreach (FileItem file in files)
+            {
+                auditTasks.Add(ProcessFileAsync(file.Path));
+                fileInfos.Add(new FileInfo(file.Path));
+            }
+
+            AuditStats finalAudit = new AuditStats();
+
+            AuditStats[] auditResults = await Task.WhenAll(auditTasks);
+            for (int i = 0; i < fileInfos.Count; i++)
+            {
+                FileItem fileItem = files[i];
+                AuditStats audit = auditResults[i];
+                FileInfo fileInfo = fileInfos[i];
+
+                double fileSize = fileInfo.Length / (1024.0 * 1024.0); // Convert to MB
+
+                // Get file related items
+
+                finalAudit.Files++;
+                finalAudit.MbOfCode += fileSize;
+
+                // Get line related items
+
+                finalAudit.LinesOfCode += audit.LinesOfCode;
+                finalAudit.Characters += audit.Characters;
+                finalAudit.Todos += audit.Todos;
+
+                finalAudit.EmptyLinesVs += audit.EmptyLinesVs;
+                finalAudit.WhiteSpaceVs += audit.WhiteSpaceVs;
+
+                // Get records
+
+                if (fileSize > finalAudit.LargestByMb)
+                {
+                    finalAudit.LargestByMb = fileSize;
+                    finalAudit.LargestByMbFile = fileItem.DisplayName;
+                }
+
+                if (audit.Characters > finalAudit.LargestByChars)
+                {
+                    finalAudit.LargestByChars = audit.Characters;
+                    finalAudit.LargestByCharsFile = fileItem.DisplayName;
+                }
+
+                if (audit.LinesOfCode > finalAudit.LargestByLines)
+                {
+                    finalAudit.LargestByLines = audit.LinesOfCode;
+                    finalAudit.LargestByLinesFile = fileItem.DisplayName;
+                }
+
+                double density = (double) audit.Characters / audit.LinesOfCode;
+                if (density > finalAudit.HighestDensity)
+                {
+                    finalAudit.HighestDensity = density;
+                    finalAudit.HighestDensityFile = fileItem.DisplayName;
+                }
+
+                int daysFromLastEdit = (int)(DateTime.Now - fileInfo.LastWriteTime).TotalDays;
+                if (daysFromLastEdit > finalAudit.OldestFileDays)
+                {
+                    finalAudit.OldestFileDays = daysFromLastEdit;
+                    finalAudit.OldestFile = fileItem.DisplayName;
+                }
+
+                int daysFromCreation = (int)(DateTime.Now - fileInfo.CreationTime).TotalDays;
+                if (daysFromCreation > finalAudit.NewestFileDays)
+                {
+                    finalAudit.NewestFileDays = daysFromCreation;
+                    finalAudit.NewestFile = fileItem.DisplayName;
+                }
+            }
+
+            finalAudit.Languages = files.Select(x => System.IO.Path.GetExtension(x.Path)).Distinct().Count();
+
+            finalAudit.EmptyLinesVs /= finalAudit.LinesOfCode;
+            finalAudit.WhiteSpaceVs /= finalAudit.Characters;
+
+            return finalAudit;
         }
     }
 }
