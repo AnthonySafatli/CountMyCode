@@ -8,6 +8,8 @@ namespace CountMyCode.Utils
 {
     public static class FileUtils
     {
+        // TODO: Add error checking for inaccessible files
+
         public static async IAsyncEnumerable<string> ReadLinesAsync(string path)
         {
             using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);

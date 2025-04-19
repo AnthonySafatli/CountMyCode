@@ -15,7 +15,7 @@ namespace CountMyCode
                 initialPath = "C:\\Users\\Anthony\\source\\repos\\CountMyCode";
             }
 
-            App app = new App(initialPath);
+            App app = new App(args, initialPath);
             await app.Run();
 
             Console.ReadLine();

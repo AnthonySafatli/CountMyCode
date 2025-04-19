@@ -1,4 +1,6 @@
 ﻿using CountMyCode.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,16 +11,21 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using CountMyCode.Utils;
 
 namespace CountMyCode
 {
     internal class App
     {
+        private readonly string[] args;
         private readonly FileItem _initialFolder;
         private Dictionary<string, string> _programmingExtensions;
 
-        internal App(string initialPath)
+        internal App(string[] args, string initialPath)
         {
+            this.args = args;
             _initialFolder = new FileItem(initialPath, Status.Folder);
             _programmingExtensions = InitializeProgrammingExtensions();
         }
@@ -36,17 +43,39 @@ namespace CountMyCode
 
         internal void LaunchAudit(AuditStats audit)
         {
-            string json = JsonSerializer.Serialize(audit);
-            string encodedJson = HttpUtility.UrlEncode(json);
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Audit complete. Spinning up web server...");
 
-            string basePath = AppContext.BaseDirectory;
-            string htmlPath = Path.Combine(basePath, "WebFiles", "index.html");
-            string url = $"file:///{htmlPath.Replace("\\", "/")}?data={encodedJson}";
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder
+                        .UseUrls("http://localhost:5000")
+                        .ConfigureServices(services =>
+                        {
+                            services.AddControllers(); // Or AddApplicationPart if needed
+                        })
+                        .Configure(app =>
+                        {
+                            app.UseRouting();
+                            app.UseEndpoints(endpoints =>
+                            {
+                                endpoints.MapControllers();
+                            });
+                        });
+                });
 
-            Console.WriteLine($"Opening {url}");
+            var host = builder.Build();
 
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            _ = host.StartAsync();
+
+            Console.WriteLine("Web server started. Opening browser...");
+
+            string url = "http://localhost:5000/audit";
+            BrowserUtils.OpenUrl(url);
         }
+
 
         private Dictionary<string, string> InitializeProgrammingExtensions()
         {

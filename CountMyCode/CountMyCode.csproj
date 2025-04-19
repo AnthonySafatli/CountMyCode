@@ -16,6 +16,12 @@
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
 </ItemGroup>
+	
+<ItemGroup>
+  <PackageReference Include="Microsoft.AspNetCore.App" />
+  <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />
+  <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+</ItemGroup>
 
 
 </Project>
