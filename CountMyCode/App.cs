@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using CountMyCode.Utils;
+using Microsoft.Extensions.FileProviders;
 
 namespace CountMyCode
 {
@@ -54,27 +55,42 @@ namespace CountMyCode
                         .UseUrls("http://localhost:5000")
                         .ConfigureServices(services =>
                         {
-                            services.AddControllers(); // Or AddApplicationPart if needed
+                            // No need for controllers if serving static files only
                         })
                         .Configure(app =>
                         {
-                            app.UseRouting();
-                            app.UseEndpoints(endpoints =>
+                            var staticFilePath = Path.Combine(Directory.GetCurrentDirectory(), "WebFiles");
+
+                            app.UseStaticFiles(new StaticFileOptions
                             {
-                                endpoints.MapControllers();
+                                FileProvider = new PhysicalFileProvider(staticFilePath),
+                                RequestPath = "" // Serve at root
+                            });
+
+                            // Redirect /audit to /index.html
+                            app.Use(async (context, next) =>
+                            {
+                                if (context.Request.Path == "/audit")
+                                {
+                                    context.Response.Redirect("/index.html");
+                                    return;
+                                }
+
+                                await next();
                             });
                         });
                 });
 
             var host = builder.Build();
 
-            _ = host.StartAsync();
+            _ = host.StartAsync(); // Fire-and-forget async start
 
             Console.WriteLine("Web server started. Opening browser...");
 
             string url = "http://localhost:5000/audit";
-            BrowserUtils.OpenUrl(url);
+            BrowserUtils.OpenUrl(url); // ✅ Your utility to launch the browser
         }
+
 
 
         private Dictionary<string, string> InitializeProgrammingExtensions()
