@@ -245,5 +245,10 @@ namespace CountMyCode.Models
                 }
             }
         }
+
+        internal AuditStats GetStats()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

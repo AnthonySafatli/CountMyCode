@@ -15,7 +15,7 @@ namespace CountMyCode
         internal App(string initialPath)
         {
             _initialFolder = new FileItem(initialPath, Status.Folder);
-            InitializeProgrammingExtensions();
+            _programmingExtensions = InitializeProgrammingExtensions();
         }
 
         internal void Run()
@@ -24,12 +24,14 @@ namespace CountMyCode
 
             _initialFolder.AddExtensions(_programmingExtensions);
 
+            AuditStats stats = _initialFolder.GetStats();
+
             Console.Clear();
         }
 
-        private void InitializeProgrammingExtensions()
+        private Dictionary<string, string> InitializeProgrammingExtensions()
         {
-            _programmingExtensions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { ".cs", "C#" },
                 { ".cshtml", "Razor (C#)" },
