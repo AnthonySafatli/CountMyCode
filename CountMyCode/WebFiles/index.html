@@ -21,55 +21,55 @@
                 <div class="mt-3 col-sm-6 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Files</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="files"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Lines of Code</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="lines-code"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Characters</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="characters"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Languages</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="languages"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 offset-xl-3 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">MB of Code</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="mb-code"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-3">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">TODOs, FIXMEs, HACKs</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="todos"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-4">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Avg Lines / File</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="avg-lines-file"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-6 col-xl-4">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Avg Characters / File</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="avg-chars-file"></span></p>
                     </div>
                 </div>
                 <div class="mt-3 col-sm-12 col-xl-4">
                     <div class="d-flex flex-column align-items-center">
                         <h4 class="m-0">Avg MB / File</h4>
-                        <p class="display-1">000</p>
+                        <p class="display-1"><span id="avg-mb-file"></span></p>
                     </div>
                 </div>
             </div>
@@ -80,14 +80,14 @@
 
         </section>
 
-        <!-- Whitespace vs Code -->
+        <!-- VS -->
         <section class="mb-5">
             <div class="row text-center justify-content-center">
                 <div class="d-none d-lg-block col-lg-2"></div>
 
                 <div class="col-sm-5 col-lg-3">
                     <h4 class="mb-0">Empty Lines</h4>
-                    <p class="display-1 mb-0">50%</p>
+                    <p class="display-1 mb-0"><span id="empty-lines-vs"></span>%</p>
                 </div>
 
                 <div class="col-sm-2 col-lg-2 d-flex align-items-center justify-content-center my-2">
@@ -96,7 +96,7 @@
 
                 <div class="col-sm-5 col-lg-3">
                     <h4 class="mb-0">Lines of Code</h4>
-                    <p class="display-1 mb-0">50%</p>
+                    <p class="display-1 mb-0"><span id="lines-code-vs"></span>%</p>
                 </div>
 
                 <div class="d-none d-lg-block col-lg-2"></div>
@@ -107,7 +107,7 @@
 
                 <div class="col-sm-5 col-lg-3">
                     <h4 class="mb-0">Whitespace</h4>
-                    <p class="display-1 mb-0">50%</p>
+                    <p class="display-1 mb-0"><span id="whitespace-vs"></span>%</p>
                 </div>
 
                 <div class="col-sm-2 col-lg-2 d-flex align-items-center justify-content-center my-2">
@@ -116,7 +116,7 @@
 
                 <div class="col-sm-5 col-lg-3">
                     <h4 class="mb-0">Code Character</h4>
-                    <p class="display-1 mb-0">50%</p>
+                    <p class="display-1 mb-0"><span id="code-chars-vs"></span>%</p>
                 </div>
 
                 <div class="d-none d-lg-block col-lg-2"></div>
@@ -124,43 +124,43 @@
         </section>
 
 
-        <!-- Largest Files -->
+        <!-- Records -->
         <section>
             <div class="mx-3">
                 <div>
                     <h4 class="mb-1">Largest file by MB</h4>
-                    <p class="display-1 mb-0">1453.5 <small class="text-muted">MB</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><span id="largest-by-mb"></span> <small class="text-muted">MB</small></p>
+                    <p id="largest-by-mb-file" class="text-muted"></p>
                 </div>
 
                 <div class="mt-4">
                     <h4 class="mb-1">Largest file by characters</h4>
-                    <p class="display-1 mb-0">4523 <small class="text-muted">characters</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><span id="largest-by-chars"></span> <small class="text-muted">characters</small></p>
+                    <p id="largest-by-chars-file" class="text-muted"></p>
                 </div>
 
                 <div class="mt-4">
                     <h4 class="mb-1">Largest file by lines</h4>
-                    <p class="display-1 mb-0">453 <small class="text-muted">lines</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><span id="largest-by-lines"></span> <small class="text-muted">lines</small></p>
+                    <p id="largest-by-lines-file" class="text-muted"></p>
                 </div>
 
                 <div class="mt-4">
                     <h4 class="mb-1">Highest density file</h4>
-                    <p class="display-1 mb-0">132 <small class="text-muted">characters / line</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><span id="highest-density"></span> <small class="text-muted">characters / line</small></p>
+                    <p id="highest-density-file" class="text-muted"></p>
                 </div>
 
                 <div class="mt-4">
                     <h4 class="mb-1">Oldest File</h4>
-                    <p class="display-1 mb-0"><small class="text-muted">modified</small> 132 <small class="text-muted">days ago</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><small class="text-muted">modified</small> <span id="oldest-file-days"></span> <small class="text-muted">days ago</small></p>
+                    <p id="oldest-file" class="text-muted"></p>
                 </div>
 
                 <div class="mt-4">
                     <h4 class="mb-1">Newest File</h4>
-                    <p class="display-1 mb-0"><small class="text-muted">created</small> 3 <small class="text-muted">days ago</small></p>
-                    <p class="text-muted">/source/main.py</p>
+                    <p class="display-1 mb-0"><small class="text-muted">created</small> <span id="newest-file-days"></span> <small class="text-muted">days ago</small></p>
+                    <p id="newest-file" class="text-muted"></p>
                 </div>
             </div>
         </section>
