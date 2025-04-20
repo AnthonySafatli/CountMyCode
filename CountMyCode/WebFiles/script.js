@@ -1,3 +1,4 @@
+
 function animateNumber(targetNumber, element, baseDuration = 1000, padLength = 3, decimalPlaces = 0) {
     const variation = baseDuration * 0.1; // ±10% variation
     const duration = baseDuration + (Math.random() * variation * 2 - variation);
@@ -25,6 +26,7 @@ function animateNumber(targetNumber, element, baseDuration = 1000, padLength = 3
 
     requestAnimationFrame(step);
 }
+
 async function init() {
 
     // Fetch Data
@@ -117,3 +119,13 @@ async function init() {
 }
 
 init();
+
+// Event Listeners
+
+document.getElementById('logo').addEventListener('click', () => {
+    confetti({
+        particleCount: 125,
+        spread: 70,
+        origin: { y: 0.65 },
+    });
+});
