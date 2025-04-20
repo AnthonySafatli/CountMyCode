@@ -1,4 +1,5 @@
 ﻿using CountMyCode.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using System;
@@ -49,6 +50,10 @@ namespace CountMyCode
             Console.WriteLine("Audit complete. Spinning up web server...");
 
             var builder = Host.CreateDefaultBuilder()
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders(); 
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder

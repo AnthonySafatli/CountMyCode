@@ -32,6 +32,6 @@ namespace CountMyCode.Models
         public int OldestFileDays { get; set; }
         public string OldestFile { get; set; } = string.Empty;
         public int NewestFileDays { get; set; }
-        public string NewestFile { get; set; }
+        public string NewestFile { get; set; } = string.Empty;
     }
 }

@@ -105,7 +105,7 @@ async function init() {
 
     const highestDensity = document.getElementById('highest-density');
     animateNumber(data?.highestDensity ?? 0, highestDensity, 2000, 0, 1);
-    document.getElementById('highest-density-file').textContent = data?.highestDesnityFile ?? "~";
+    document.getElementById('highest-density-file').textContent = data?.highestDensityFile ?? "~";
 
     const oldestFileDays = document.getElementById('oldest-file-days');
     animateNumber(data?.oldestFileDays ?? 0, oldestFileDays, 2000, 0);

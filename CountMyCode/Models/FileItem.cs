@@ -347,40 +347,40 @@ namespace CountMyCode.Models
                 if (fileSize > finalAudit.LargestByMb)
                 {
                     finalAudit.LargestByMb = fileSize;
-                    finalAudit.LargestByMbFile = fileItem.DisplayName;
+                    finalAudit.LargestByMbFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 if (audit.Characters > finalAudit.LargestByChars)
                 {
                     finalAudit.LargestByChars = audit.Characters;
-                    finalAudit.LargestByCharsFile = fileItem.DisplayName;
+                    finalAudit.LargestByCharsFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 if (audit.LinesOfCode > finalAudit.LargestByLines)
                 {
                     finalAudit.LargestByLines = audit.LinesOfCode;
-                    finalAudit.LargestByLinesFile = fileItem.DisplayName;
+                    finalAudit.LargestByLinesFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 double density = (double) audit.Characters / audit.LinesOfCode;
                 if (density > finalAudit.HighestDensity)
                 {
                     finalAudit.HighestDensity = density;
-                    finalAudit.HighestDensityFile = fileItem.DisplayName;
+                    finalAudit.HighestDensityFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 int daysFromLastEdit = (int)(DateTime.Now - fileInfo.LastWriteTime).TotalDays;
                 if (daysFromLastEdit > finalAudit.OldestFileDays)
                 {
                     finalAudit.OldestFileDays = daysFromLastEdit;
-                    finalAudit.OldestFile = fileItem.DisplayName;
+                    finalAudit.OldestFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 int daysFromCreation = (int)(DateTime.Now - fileInfo.CreationTime).TotalDays;
                 if (daysFromCreation > finalAudit.NewestFileDays)
                 {
                     finalAudit.NewestFileDays = daysFromCreation;
-                    finalAudit.NewestFile = fileItem.DisplayName;
+                    finalAudit.NewestFile = fileItem.Path.Remove(0, Path.Length);
                 }
             }
 
