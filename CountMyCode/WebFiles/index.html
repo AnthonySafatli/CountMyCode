@@ -7,10 +7,15 @@
     <title>CountMyCode</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="vendor/bootstrap-5.0.2/bootstrap.min.css" />
+
+    <!-- Montserrat Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body class="bg-dark text-light">
+<body class="text-light">
     <header class="container">
-        <h1 class="mt-5 mb-0">CountMyCode</h1>
+        <h1 class="mt-5 mb-0"><span class="coloured">CountMyCode</span></h1>
         <small class="text-muted">C:/Users/Anthony/source/repos/CountMyCode/CountMyCode/</small>
     </header>
 
@@ -128,39 +133,39 @@
         <section>
             <div class="mx-3">
                 <div>
-                    <h4 class="mb-1">Largest file by KB</h4>
-                    <p class="display-1 mb-0"><span id="largest-by-kb"></span> <small class="text-muted">KB</small></p>
-                    <p id="largest-by-kb-file" class="text-muted"></p>
+                    <h4>Largest file by KB</h4>
+                    <p class="display-1 my-2 record-p"><span id="largest-by-kb"></span> <small class="text-muted">KB</small></p>
+                    <p id="largest-by-kb-file" class="text-muted file-name"></p>
                 </div>
 
                 <div class="mt-4">
-                    <h4 class="mb-1">Largest file by characters</h4>
-                    <p class="display-1 mb-0"><span id="largest-by-chars"></span> <small class="text-muted">characters</small></p>
-                    <p id="largest-by-chars-file" class="text-muted"></p>
+                    <h4>Largest file by characters</h4>
+                    <p class="display-1 my-2 record-p"><span id="largest-by-chars"></span> <small class="text-muted">characters</small></p>
+                    <p id="largest-by-chars-file" class="text-muted file-name"></p>
                 </div>
 
                 <div class="mt-4">
-                    <h4 class="mb-1">Largest file by lines</h4>
-                    <p class="display-1 mb-0"><span id="largest-by-lines"></span> <small class="text-muted">lines</small></p>
-                    <p id="largest-by-lines-file" class="text-muted"></p>
+                    <h4>Largest file by lines</h4>
+                    <p class="display-1 my-2 record-p"><span id="largest-by-lines"></span> <small class="text-muted">lines</small></p>
+                    <p id="largest-by-lines-file" class="text-muted file-name"></p>
                 </div>
 
                 <div class="mt-4">
-                    <h4 class="mb-1">Highest density file</h4>
-                    <p class="display-1 mb-0"><span id="highest-density"></span> <small class="text-muted">characters / line</small></p>
-                    <p id="highest-density-file" class="text-muted"></p>
+                    <h4>Highest density file</h4>
+                    <p class="display-1 my-2 record-p"><span id="highest-density"></span> <small class="text-muted">characters / line</small></p>
+                    <p id="highest-density-file" class="text-muted file-name"></p>
                 </div>
 
                 <div class="mt-4">
-                    <h4 class="mb-1">Oldest File</h4>
-                    <p class="display-1 mb-0"><small class="text-muted">modified</small> <span id="oldest-file-days"></span> <small class="text-muted">days ago</small></p>
-                    <p id="oldest-file" class="text-muted"></p>
+                    <h4>Oldest File</h4>
+                    <p class="display-1 my-2 record-p"><small class="text-muted">modified</small> <span id="oldest-file-days"></span> <small class="text-muted">days ago</small></p>
+                    <p id="oldest-file" class="text-muted file-name"></p>
                 </div>
 
                 <div class="mt-4">
-                    <h4 class="mb-1">Newest File</h4>
-                    <p class="display-1 mb-0"><small class="text-muted">created</small> <span id="newest-file-days"></span> <small class="text-muted">days ago</small></p>
-                    <p id="newest-file" class="text-muted"></p>
+                    <h4>Newest File</h4>
+                    <p class="display-1 my-2 record-p"><small class="text-muted">created</small> <span id="newest-file-days"></span> <small class="text-muted">days ago</small></p>
+                    <p id="newest-file" class="text-muted file-name"></p>
                 </div>
             </div>
         </section>

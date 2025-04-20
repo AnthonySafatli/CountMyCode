@@ -1,7 +1,31 @@
-.text-light > .text-muted {
-    color: #bbb !important; /* lighter muted color for light text */
+body {
+    background-color: #1d262f !important;
+    font-family: "Montserrat", sans-serif !important;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
-.text-light h4 {
-    color: #888 !important;
+.coloured {
+    background: linear-gradient(90deg, #6EE7B7, #4faadd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+h4 {
+    background: linear-gradient(90deg, #57b9b3, #4faadd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-light .text-muted {
+    color: #bbb !important;
+}
+
+.record-p {
+    line-height: 0.8 !important;
+}
+
+.file-name {
+    word-wrap: anywhere;
 }
