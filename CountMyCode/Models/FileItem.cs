@@ -23,6 +23,26 @@ namespace CountMyCode.Models
             }
         }
 
+        internal bool IsIgnored
+        {
+            get
+            {
+                if (Status == Status.Ignored)
+                    return true;
+
+                FileItem? lineageFileItem = Parent;
+                while (lineageFileItem != null)
+                {
+                    if (lineageFileItem.Status == Status.Ignored)
+                        return true;
+
+                    lineageFileItem = lineageFileItem.Parent;
+                }
+
+                return false;
+            }
+        }
+
         internal FileItem(FileItem parent, string path, Status status)
         {
             Parent = parent;
@@ -52,7 +72,7 @@ namespace CountMyCode.Models
             childrenLoaded = true;
         }
 
-        internal void RunMenu()
+        internal bool RunMenu()
         {
             Console.Clear();
 
@@ -92,12 +112,16 @@ namespace CountMyCode.Models
                 else if (keyInfo.Key == ConsoleKey.RightArrow)
                 {
                     if (selectedFileItem?.ItemType == Status.Folder)
-                        selectedFileItem.RunMenu();
+                    {
+                        bool runAudit = selectedFileItem.RunMenu();
+                        if (runAudit)
+                            return true; 
+                    }
                 }
                 else if (keyInfo.Key == ConsoleKey.LeftArrow)
                 {
                     if (Parent != null)
-                        return;
+                        return false;
                 }
                 else if (keyInfo.Key == ConsoleKey.Spacebar)
                 {
@@ -108,8 +132,7 @@ namespace CountMyCode.Models
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Enter)
                 {
-                    if (Parent == null)
-                        return;
+                    return true;
                 }
             }
         }
@@ -144,8 +167,19 @@ namespace CountMyCode.Models
 
         private void RenderHeader()
         {
-            Console.ForegroundColor = Parent == null ? ConsoleColor.DarkCyan : ConsoleColor.Cyan;
-            Console.WriteLine("| " + Path);
+            var foregroundColour = Parent == null ? ConsoleColor.DarkCyan : ConsoleColor.Cyan;
+
+            Console.ForegroundColor = foregroundColour;
+            Console.Write("| ");
+
+            if (IsIgnored)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("[Ignored] ");
+            }
+
+            Console.ForegroundColor = foregroundColour;
+            Console.WriteLine(Path);
             Console.WriteLine();
         }
 
@@ -177,8 +211,8 @@ namespace CountMyCode.Models
                 Console.WriteLine("LEFT        | Go back to the folders parents");
             if (Children.Count > 0)
                 Console.WriteLine("SPACE       | Toggle if an item is ignored by the audit"); 
-            if (Parent == null)
-                Console.WriteLine("ESC / ENTER | Run the audit");
+            
+            Console.WriteLine("ESC / ENTER | Run the audit");
         }
 
         internal string GetLanguageName(string extension)
