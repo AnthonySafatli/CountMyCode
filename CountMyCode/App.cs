@@ -55,7 +55,8 @@ namespace CountMyCode
                         .UseUrls("http://localhost:5000")
                         .ConfigureServices(services =>
                         {
-                            // No need for controllers if serving static files only
+                            services.AddSingleton(audit);
+                            services.AddControllers();
                         })
                         .Configure(app =>
                         {
@@ -67,7 +68,8 @@ namespace CountMyCode
                                 RequestPath = "" // Serve at root
                             });
 
-                            // Redirect /audit to /index.html
+                            app.UseRouting();
+
                             app.Use(async (context, next) =>
                             {
                                 if (context.Request.Path == "/audit")
@@ -78,20 +80,24 @@ namespace CountMyCode
 
                                 await next();
                             });
+
+                            app.UseEndpoints(endpoints =>
+                            {
+                                endpoints.MapControllers();
+                            });
                         });
+
                 });
 
             var host = builder.Build();
 
-            _ = host.StartAsync(); // Fire-and-forget async start
+            _ = host.StartAsync(); 
 
             Console.WriteLine("Web server started. Opening browser...");
 
             string url = "http://localhost:5000/audit";
-            BrowserUtils.OpenUrl(url); // ✅ Your utility to launch the browser
+            BrowserUtils.OpenUrl(url); 
         }
-
-
 
         private Dictionary<string, string> InitializeProgrammingExtensions()
         {

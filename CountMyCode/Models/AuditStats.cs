@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CountMyCode.Models
 {
-    internal class AuditStats
+    public class AuditStats
     {
         public int Files { get; set; }
         public int LinesOfCode { get; set; }
