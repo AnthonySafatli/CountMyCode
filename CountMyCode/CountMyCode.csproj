@@ -6,10 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="WebFiles\images\" />
-  </ItemGroup>
 	
 <ItemGroup>
     <Content Include="WebFiles\**\*">
