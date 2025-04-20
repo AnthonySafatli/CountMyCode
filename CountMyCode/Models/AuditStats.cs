@@ -12,17 +12,17 @@ namespace CountMyCode.Models
         public int LinesOfCode { get; set; }
         public int Characters { get; set; }
         public int Languages { get; set; }
-        public double MbOfCode { get; set; }
+        public double KbOfCode { get; set; }
         public int Todos { get; set; }
         public double AvgLinesPerFile => Files == 0 ? 0 : (double) LinesOfCode / Files;
         public double AvgCharsPerFile => Files == 0 ? 0 : (double) Characters / Files;
-        public double AvgMbPerFile => Files == 0 ? 0 : (double) MbOfCode / Files;
+        public double AvgKbPerFile => Files == 0 ? 0 : (double) KbOfCode / Files;
 
         public int EmptyLinesVs { get; set; }
         public int WhiteSpaceVs { get; set; }
 
-        public double LargestByMb { get; set; }
-        public string LargestByMbFile { get; set; } = string.Empty;
+        public double LargestByKb { get; set; }
+        public string LargestByKbFile { get; set; } = string.Empty;
         public int LargestByChars { get; set; }
         public string LargestByCharsFile { get; set; } = string.Empty;
         public int LargestByLines { get; set; }

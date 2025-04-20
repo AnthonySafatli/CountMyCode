@@ -326,12 +326,12 @@ namespace CountMyCode.Models
                 AuditStats audit = auditResults[i];
                 FileInfo fileInfo = fileInfos[i];
 
-                double fileSize = fileInfo.Length / (1024.0 * 1024.0); // Convert to MB
+                double fileSize = fileInfo.Length / 1024.0; // Convert to KB
 
                 // Get file related items
 
                 finalAudit.Files++;
-                finalAudit.MbOfCode += fileSize;
+                finalAudit.KbOfCode += fileSize;
 
                 // Get line related items
 
@@ -344,10 +344,10 @@ namespace CountMyCode.Models
 
                 // Get records
 
-                if (fileSize > finalAudit.LargestByMb)
+                if (fileSize > finalAudit.LargestByKb)
                 {
-                    finalAudit.LargestByMb = fileSize;
-                    finalAudit.LargestByMbFile = fileItem.Path.Remove(0, Path.Length);
+                    finalAudit.LargestByKb = fileSize;
+                    finalAudit.LargestByKbFile = fileItem.Path.Remove(0, Path.Length);
                 }
 
                 if (audit.Characters > finalAudit.LargestByChars)

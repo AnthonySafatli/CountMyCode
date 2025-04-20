@@ -56,8 +56,8 @@ async function init() {
     const languages = document.getElementById('languages');
     animateNumber(data?.languages ?? 0, languages, 1500);
 
-    const mbOfCode = document.getElementById('mb-code');
-    animateNumber(data?.mbOfCode ?? 0, mbOfCode, 1500);
+    const kbOfCode = document.getElementById('kb-code');
+    animateNumber(data?.kbOfCode ?? 0, kbOfCode, 1500);
 
     const todos = document.getElementById('todos');
     animateNumber(data?.todos ?? 0, todos, 1500);
@@ -68,8 +68,8 @@ async function init() {
     const avgCharsPerFile = document.getElementById('avg-chars-file');
     animateNumber(data?.avgCharsPerFile ?? 0, avgCharsPerFile, 1500);
 
-    const avgMbPerFile = document.getElementById('avg-mb-file');
-    animateNumber(data?.avgMbPerFile ?? 0, avgMbPerFile, 1500);
+    const avgKbPerFile = document.getElementById('avg-kb-file');
+    animateNumber(data?.avgKbPerFile ?? 0, avgKbPerFile, 1500);
 
     // Pie Charts
 
@@ -91,9 +91,9 @@ async function init() {
 
     // Records
 
-    const largestByMb = document.getElementById('largest-by-mb');
-    animateNumber(data?.largestByMb ?? 0, largestByMb, 2000, 0, 1);
-    document.getElementById('largest-by-mb-file').textContent = data?.largestByMbFile ?? "~";
+    const largestByKb = document.getElementById('largest-by-kb');
+    animateNumber(data?.largestByKb ?? 0, largestByKb, 2000, 0, 1);
+    document.getElementById('largest-by-kb-file').textContent = data?.largestByKbFile ?? "~";
 
     const largestByChars = document.getElementById('largest-by-chars');
     animateNumber(data?.largestByChars ?? 0, largestByChars, 2000, 0);
