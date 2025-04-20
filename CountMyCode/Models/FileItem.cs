@@ -386,8 +386,11 @@ namespace CountMyCode.Models
 
             finalAudit.Languages = files.Select(x => System.IO.Path.GetExtension(x.Path)).Distinct().Count();
 
-            finalAudit.EmptyLinesVs /= finalAudit.LinesOfCode;
-            finalAudit.WhiteSpaceVs /= finalAudit.Characters;
+            double emptyLines = (double) finalAudit.EmptyLinesVs / finalAudit.LinesOfCode;
+            finalAudit.EmptyLinesVs = (int)(emptyLines * 100);
+
+            double whiteSpace = (double)finalAudit.WhiteSpaceVs / finalAudit.Characters;
+            finalAudit.WhiteSpaceVs = (int)(whiteSpace * 100);
 
             return finalAudit;
         }

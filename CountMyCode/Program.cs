@@ -18,6 +18,7 @@ namespace CountMyCode
             App app = new App(args, initialPath);
             await app.Run();
 
+            Console.WriteLine("\nPress any key to exit...");
             Console.ReadLine();
         }
     }

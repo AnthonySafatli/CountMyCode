@@ -84,10 +84,10 @@ async function init() {
     animateNumber(100 - (data?.emptyLinesVs ?? 0), linesOfCodeVs, 2000, 0);
 
     const whitespaceVs = document.getElementById('whitespace-vs');
-    animateNumber(data?.whitespaceVs ?? 0, whitespaceVs, 2000, 0);
+    animateNumber(data?.whiteSpaceVs ?? 0, whitespaceVs, 2000, 0);
 
     const codeCharactersVs = document.getElementById('code-chars-vs');
-    animateNumber(100 - (data?.whitespaceVs ?? 0), codeCharactersVs, 2000, 0);
+    animateNumber(100 - (data?.whiteSpaceVs ?? 0), codeCharactersVs, 2000, 0);
 
     // Records
 
