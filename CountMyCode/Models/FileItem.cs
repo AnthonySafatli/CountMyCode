@@ -1,4 +1,5 @@
 ﻿using CountMyCode.Utils;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,7 @@ namespace CountMyCode.Models
         internal Status ItemType { get; set; }
         internal Status Status { get; set; }
         internal List<FileItem> Children { get; set; } = new List<FileItem>();
+        internal List<bool> Options { get; set; } = new List<bool>();
 
         internal string DisplayName
         {
@@ -52,7 +54,14 @@ namespace CountMyCode.Models
         }
 
         internal FileItem(string path, Status status)
-            : this(null, path, status) { }
+            : this(null, path, status) 
+        {
+            // Auto ignore non text files
+            Options.Add(true);
+
+            if (Options.Count != Enum.GetValues(typeof(OptionIndexes)).Length)
+                throw new ApplicationException("You need to intialize all options");
+        }
 
         private void LoadChildren()
         {
@@ -81,9 +90,12 @@ namespace CountMyCode.Models
 
             FileItem? selectedFileItem = Children.Count > 0 ? Children[0] : null;
 
+            bool isInOptionsMenu = false;
+            int selectedOptionIndex = 0;
+
             while (true)
             {
-                RenderMenu(selectedFileItem);
+                RenderMenu(isInOptionsMenu, selectedFileItem, selectedOptionIndex);
                 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true); 
 
@@ -125,10 +137,20 @@ namespace CountMyCode.Models
                 }
                 else if (keyInfo.Key == ConsoleKey.Spacebar)
                 {
+                    if (isInOptionsMenu)
+                    {
+                        Options[selectedOptionIndex] = !Options[selectedOptionIndex];
+                        continue;
+                    }
+
                     if (selectedFileItem == null)
                         continue;
 
                     ToggleIgnore(selectedFileItem);
+                }
+                else if (keyInfo.Key == ConsoleKey.Tab)
+                {
+                    isInOptionsMenu = !isInOptionsMenu;
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Enter)
                 {
@@ -145,25 +167,19 @@ namespace CountMyCode.Models
             item.Status = item.Status == Status.Ignored ? item.ItemType : Status.Ignored;
         }
 
-        private void RenderMenu(FileItem? selectedFileItem)
+        private void RenderMenu(bool isInOptionsMenu, FileItem? selectedFileItem, int selectedOptionIndex)
         {
             Console.Clear();
 
             RenderHeader();
 
-            foreach (FileItem item in Children)
-            {
-                RenderFileItem(item, selectedFileItem);
-            }
+            RenderFileItems(isInOptionsMenu, selectedFileItem);
 
-            if (Children.Count == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("No items found.");
-            }
+            RenderOptions(isInOptionsMenu, selectedOptionIndex);
 
-            RenderInstructions();
+            RenderInstructions(isInOptionsMenu);
         }
+
 
         private void RenderHeader()
         {
@@ -182,23 +198,81 @@ namespace CountMyCode.Models
             Console.WriteLine(Path);
             Console.WriteLine();
         }
-
-        private void RenderFileItem(FileItem fileItem, FileItem? selectedFileItem)
+        private void RenderFileItems(bool isInOptionsMenu, FileItem? selectedFileItem)
         {
-            if (fileItem.Status == Status.Ignored)
-                Console.ForegroundColor = ConsoleColor.Red;
-            else
-                Console.ForegroundColor = fileItem == selectedFileItem ? ConsoleColor.Green : ConsoleColor.White;
+            foreach (FileItem item in Children)
+            {
+                RenderFileItem(item, isInOptionsMenu, selectedFileItem);
+            }
 
-            Console.Write($"[{fileItem.Status}] ");
-
-            if (fileItem == selectedFileItem)
-                Console.ForegroundColor = ConsoleColor.Green;
-
-            Console.WriteLine(fileItem.DisplayName);
+            if (Children.Count == 0)
+            {
+                Console.ForegroundColor = isInOptionsMenu ? ConsoleColor.DarkGray : ConsoleColor.White;
+                Console.WriteLine("No items found.");
+            }
         }
 
-        private void RenderInstructions()
+        private void RenderFileItem(FileItem fileItem, bool isInOptionsMenu, FileItem? selectedFileItem)
+        {
+            int statusPadding = 0;
+            if (fileItem.Status == Status.Folder)
+                statusPadding = 1;
+            else if (fileItem.Status == Status.File)
+                statusPadding = 3;
+
+            RenderInputLine(!isInOptionsMenu, fileItem.Status.ToString(), fileItem.Status == Status.Ignored, statusPadding, fileItem.DisplayName, fileItem == selectedFileItem);
+        }
+
+        private void RenderOptions(bool isInOptionsMenu, int selectedOptionIndex)
+        {
+            if (Options.Count == 0)
+                return;
+
+            Console.WriteLine();
+            Console.ForegroundColor = isInOptionsMenu ? ConsoleColor.White : ConsoleColor.DarkGray;
+
+            for (int i = 0; i < Options.Count; i++)
+            {
+                string optionText = Options[i] ? "ON" : "OFF";
+                string optionDescription = "";
+
+                switch (i)
+                {
+                    case (int)OptionIndexes.IgnoreNonTextFiles:
+                        optionDescription = "Ignore non-text files";
+                        break;
+                    default:
+                        throw new ApplicationException("Options list and enum are out of sync");
+                }
+
+                RenderInputLine(isInOptionsMenu, optionText, !Options[i], Options[i] ? 1 : 0, optionDescription, i == selectedOptionIndex);
+            }
+        }
+
+        private void RenderInputLine(bool isActive, string status, bool isStatusBad, int statusPadding, string itemName, bool isSelected)
+        {
+            ConsoleColor foregroundColour = ConsoleColor.DarkGray;
+
+            if (isActive)
+            {
+                if (isStatusBad)
+                    foregroundColour = ConsoleColor.Red;
+                else
+                    foregroundColour = isSelected ? ConsoleColor.Green : ConsoleColor.White;
+            }
+
+            Console.ForegroundColor = foregroundColour;
+
+            Console.Write($"[{status}] ");
+            Console.Write(new string(' ', statusPadding));
+
+            if (isSelected && isActive)
+                Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine(itemName);
+        }
+
+        private void RenderInstructions(bool isInOptionsMenu)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine();
@@ -210,7 +284,9 @@ namespace CountMyCode.Models
             if (Parent != null)
                 Console.WriteLine("LEFT        | Go back to the folders parents");
             if (Children.Count > 0)
-                Console.WriteLine("SPACE       | Toggle if an item is ignored by the audit"); 
+                Console.WriteLine("SPACE       | " + (isInOptionsMenu ? "Toggle an option" : "Toggle if an item is ignored by the audit")); 
+            if (Options.Count > 0)
+                Console.WriteLine("TAB         | Enter options menu");
             
             Console.WriteLine("ESC / ENTER | Run the audit");
         }
@@ -282,7 +358,7 @@ namespace CountMyCode.Models
             }
         }
 
-        internal List<FileItem> GetFiles()
+        internal List<FileItem> GetFiles(bool ignoreNonTextFiles)
         {
             if (!childrenLoaded)
                 LoadChildren();
@@ -296,11 +372,20 @@ namespace CountMyCode.Models
 
                 if (item.ItemType == Status.File)
                 {
+                    if (ignoreNonTextFiles)
+                    {
+                        if (FileUtils.IsBinary(item.Path))
+                        {
+                            item.Status = Status.Ignored;
+                            continue;
+                        }
+                    }
+
                     files.Add(item);
                 }
                 else if (item.ItemType == Status.Folder)
                 {
-                    files.AddRange(item.GetFiles());
+                    files.AddRange(item.GetFiles(ignoreNonTextFiles));
                 }
             }
 
@@ -340,7 +425,7 @@ namespace CountMyCode.Models
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Running the audit. Counting your code. Please wait...");
 
-            List<FileItem> files = GetFiles();
+            List<FileItem> files = GetFiles(Options[(int)OptionIndexes.IgnoreNonTextFiles]);
             
             List<Task<AuditStats>> auditTasks = new List<Task<AuditStats>>();
             List<FileInfo> fileInfos = new List<FileInfo>();
@@ -428,5 +513,10 @@ namespace CountMyCode.Models
 
             return finalAudit;
         }
+    }
+
+    internal enum OptionIndexes
+    {
+        IgnoreNonTextFiles = 0,
     }
 }
