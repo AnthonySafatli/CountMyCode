@@ -7,19 +7,28 @@ namespace CountMyCode
     {
         static async Task Main(string[] args)
         {
-            Console.Write("Enter the path to the directory you want to analyze:\n");
-            string initialPath = InputUtils.GetInput(true);
-
-            if (string.IsNullOrWhiteSpace(initialPath))
-            {
-                // initialPath = Environment.CurrentDirectory;
-                initialPath = "C:\\Users\\Anthony\\source\\repos\\CountMyCode";
-            }
-
             int portNumber = 5000;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("Enter the path to the directory you want to analyze:\n");
+                string initialPath = InputUtils.GetInput(true);
+
+                if (string.IsNullOrWhiteSpace(initialPath))
+                {
+                    // initialPath = Environment.CurrentDirectory;
+                    initialPath = "C:\\Users\\Anthony\\source\\repos\\CountMyCode";
+                }
             
-            App app = new App(args, initialPath);
-            await app.Run(portNumber);
+                App app = new App(args, initialPath);
+                bool success = await app.Run(portNumber);
+                if (!success)
+                    continue;
+
+                break;
+            }
 
             Console.WriteLine();
             Console.WriteLine($"Audit is running on http://localhost:{portNumber}/audit");

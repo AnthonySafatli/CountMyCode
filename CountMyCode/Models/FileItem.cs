@@ -45,7 +45,7 @@ namespace CountMyCode.Models
             }
         }
 
-        internal FileItem(FileItem parent, string path, Status status)
+        internal FileItem(FileItem? parent, string path, Status status)
         {
             Parent = parent;
             Path = path;
@@ -60,7 +60,7 @@ namespace CountMyCode.Models
             Options.Add(true);
 
             if (Options.Count != Enum.GetValues(typeof(OptionIndexes)).Length)
-                throw new ApplicationException("You need to intialize all options");
+                throw new ApplicationException("You need to initialize all options");
         }
 
         private void LoadChildren()
@@ -83,7 +83,11 @@ namespace CountMyCode.Models
             childrenLoaded = true;
         }
 
-        internal bool RunMenu()
+        /// <summary>
+        /// return true => run the audit 
+        /// returns null => restart the program
+        /// </summary>
+        internal bool? RunMenu()
         {
             Console.Clear();
 
@@ -127,9 +131,9 @@ namespace CountMyCode.Models
                 {
                     if (selectedFileItem?.ItemType == Status.Folder)
                     {
-                        bool runAudit = selectedFileItem.RunMenu();
-                        if (runAudit)
-                            return true; 
+                        bool? menuResult = selectedFileItem.RunMenu();
+                        if (menuResult == true || menuResult == null)
+                            return menuResult; 
                     }
                 }
                 else if (keyInfo.Key == ConsoleKey.LeftArrow)
@@ -152,11 +156,16 @@ namespace CountMyCode.Models
                 }
                 else if (keyInfo.Key == ConsoleKey.Tab)
                 {
-                    isInOptionsMenu = !isInOptionsMenu;
+                    if (Options.Count > 0)
+                        isInOptionsMenu = !isInOptionsMenu;
                 }
-                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Enter)
+                else if (keyInfo.Key == ConsoleKey.Enter)
                 {
                     return true;
+                }
+                else if (keyInfo.Key == ConsoleKey.Escape)
+                {
+                    return null;
                 }
             }
         }
@@ -279,18 +288,19 @@ namespace CountMyCode.Models
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine();
 
-            if (Children.Count > 1)
+            if ((!isInOptionsMenu && Children.Count > 1) || (isInOptionsMenu && Options.Count > 1))
                 Console.WriteLine("UP / DOWN   | Navigate up or down");
-            if (Children.Any(x => x.ItemType == Status.Folder))
+            if (!isInOptionsMenu && Children.Any(x => x.ItemType == Status.Folder))
                 Console.WriteLine("RIGHT       | Enter a folder to view its contents");
             if (Parent != null)
                 Console.WriteLine("LEFT        | Go back to the folders parents");
-            if (Children.Count > 0)
+            if ((!isInOptionsMenu && Children.Count > 0) || (isInOptionsMenu && Options.Count > 0))
                 Console.WriteLine("SPACE       | " + (isInOptionsMenu ? "Toggle an option" : "Toggle if an item is ignored by the audit")); 
             if (Options.Count > 0)
-                Console.WriteLine("TAB         | Enter options menu");
+                Console.WriteLine($"TAB         | {(isInOptionsMenu ? "Exit" : "Enter")} options menu");
             
-            Console.WriteLine("ESC / ENTER | Run the audit");
+            Console.WriteLine("ENTER      | Run the audit");
+            Console.WriteLine("ESC        | Choose another folder");
         }
 
         internal string GetLanguageName(string extension)

@@ -1,3 +1,7 @@
+:root {
+    color-scheme: dark;
+}
+
 body {
     background-color: #1d262f !important;
     font-family: "Montserrat", sans-serif !important;
@@ -39,4 +43,8 @@ h4 {
     mask-image: url('/images/logo.png');
     mask-repeat: no-repeat;
     mask-size: contain;
+}
+
+.counting-divs > div > div {
+    overflow-x: auto;
 }

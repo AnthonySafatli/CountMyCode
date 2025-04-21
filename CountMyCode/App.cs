@@ -32,15 +32,19 @@ namespace CountMyCode
             _programmingExtensions = InitializeProgrammingExtensions();
         }
 
-        internal async Task Run(int portNumber)
+        internal async Task<bool> Run(int portNumber)
         {
-            _initialFolder.RunMenu();
+            bool? menuResult = _initialFolder.RunMenu();
+            if (menuResult == null)
+                return false;
 
             _initialFolder.AddExtensions(_programmingExtensions);
 
             AuditStats stats = await _initialFolder.RunAudit();
 
             LaunchAudit(stats, portNumber);
+
+            return true;
         }
 
         internal void LaunchAudit(AuditStats audit, int portNumber)
