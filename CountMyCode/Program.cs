@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CountMyCode.Utils;
+using System.IO;
 
 namespace CountMyCode
 {
@@ -6,19 +7,23 @@ namespace CountMyCode
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Enter the path to the directory you want to analyze:");
-            string? initialPath = Console.ReadLine();
-            
+            Console.Write("Enter the path to the directory you want to analyze:\n");
+            string initialPath = InputUtils.GetInput(true);
+
             if (string.IsNullOrWhiteSpace(initialPath))
             {
                 // initialPath = Environment.CurrentDirectory;
                 initialPath = "C:\\Users\\Anthony\\source\\repos\\CountMyCode";
             }
 
+            int portNumber = 5000;
+            
             App app = new App(args, initialPath);
-            await app.Run();
+            await app.Run(portNumber);
 
-            Console.WriteLine("\nPress any key to exit...");
+            Console.WriteLine();
+            Console.WriteLine($"Audit is running on http://localhost:{portNumber}/audit");
+            Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
         }
     }

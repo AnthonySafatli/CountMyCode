@@ -32,7 +32,7 @@ namespace CountMyCode
             _programmingExtensions = InitializeProgrammingExtensions();
         }
 
-        internal async Task Run()
+        internal async Task Run(int portNumber)
         {
             _initialFolder.RunMenu();
 
@@ -40,13 +40,11 @@ namespace CountMyCode
 
             AuditStats stats = await _initialFolder.RunAudit();
 
-            LaunchAudit(stats);
+            LaunchAudit(stats, portNumber);
         }
 
-        internal void LaunchAudit(AuditStats audit)
+        internal void LaunchAudit(AuditStats audit, int portNumber)
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Audit complete. Spinning up web server...");
 
             var builder = Host.CreateDefaultBuilder()
@@ -57,7 +55,7 @@ namespace CountMyCode
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseUrls("http://localhost:5000")
+                        .UseUrls($"http://localhost:{portNumber}")
                         .ConfigureServices(services =>
                         {
                             services.AddSingleton(audit);
@@ -100,7 +98,7 @@ namespace CountMyCode
 
             Console.WriteLine("Web server started. Opening browser...");
 
-            string url = "http://localhost:5000/audit";
+            string url = $"http://localhost:{portNumber}/audit";
             BrowserUtils.OpenUrl(url); 
         }
 

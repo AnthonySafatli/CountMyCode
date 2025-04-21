@@ -65,6 +65,8 @@ namespace CountMyCode.Models
 
         private void LoadChildren()
         {
+            // TODO: Check if the path is a directory
+
             string[] files = Directory.GetFiles(Path, "*", SearchOption.TopDirectoryOnly);
             string[] directories = Directory.GetDirectories(Path, "*", SearchOption.TopDirectoryOnly);
 
@@ -299,27 +301,12 @@ namespace CountMyCode.Models
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.White;
-
             Console.Write($"Please enter a name for this language: ");
 
             Console.ForegroundColor = ConsoleColor.Green;
-
             Console.WriteLine(extension);
 
-            while (true)
-            {
-                string? fileName = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    Console.WriteLine("No name entered. Try again.");
-                    Console.WriteLine();
-                }
-                else
-                {
-                    return fileName;
-                }
-            }
+            return InputUtils.GetInput();
         }
 
         internal List<string> GetExtensions()
