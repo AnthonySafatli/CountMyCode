@@ -1,4 +1,5 @@
 ﻿using CountMyCode.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -63,9 +64,15 @@ namespace CountMyCode.Models
                 throw new ApplicationException("You need to initialize all options");
         }
 
-        private void LoadChildren()
+        private void LoadChildren(bool recursive = false)
         {
             // TODO: Check if the path is a directory
+
+            if (ItemType == Status.File)
+                return;
+
+            if (childrenLoaded)
+                return;
 
             string[] files = Directory.GetFiles(Path, "*", SearchOption.TopDirectoryOnly);
             string[] directories = Directory.GetDirectories(Path, "*", SearchOption.TopDirectoryOnly);
@@ -78,6 +85,15 @@ namespace CountMyCode.Models
             foreach (string file in files)
             {
                 Children.Add(new FileItem(this, file, Status.File));
+            }
+
+            if (recursive)
+            {
+                foreach (FileItem item in Children)
+                {
+                    if (item.ItemType == Status.Folder)
+                        item.LoadChildren(true);
+                }
             }
 
             childrenLoaded = true;
@@ -303,11 +319,8 @@ namespace CountMyCode.Models
             Console.WriteLine("ESC        | Choose another folder");
         }
 
-        internal string GetLanguageName(string extension)
+        internal string GetLanguageName(string extension, List<FileItem> files)
         {
-            if (string.IsNullOrWhiteSpace(extension))
-                throw new ArgumentException("Extension cannot be null or empty.", nameof(extension));
-
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -315,6 +328,17 @@ namespace CountMyCode.Models
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(extension);
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine();
+            Console.WriteLine("This extension is used in these files:");
+            Console.WriteLine();
+
+            files = files.Where(x => System.IO.Path.GetExtension(x.Path) == extension).Take(5).ToList();
+            foreach (FileItem file in files)
+            {
+                Console.WriteLine(file.Path.Remove(0, Path.Length));
+            }
 
             return InputUtils.GetInput();
         }
@@ -343,19 +367,25 @@ namespace CountMyCode.Models
 
         internal void AddExtensions(Dictionary<string, string> programmingExtensions)
         {
+            LoadChildren(true);
+            List<FileItem> files = GetFiles();
+
             List<string> extensions = GetExtensions();
 
             foreach (string extension in extensions)
             {
                 if (!programmingExtensions.ContainsKey(extension))
                 {
-                    string fileName = GetLanguageName(extension);
+                    if (string.IsNullOrWhiteSpace(extension))
+                        continue;
+
+                    string fileName = GetLanguageName(extension, files);
                     programmingExtensions.Add(extension, fileName);
                 }
             }
         }
 
-        internal List<FileItem> GetFiles(bool ignoreNonTextFiles)
+        internal List<FileItem> GetFiles()
         {
             if (!childrenLoaded)
                 LoadChildren();
@@ -369,20 +399,11 @@ namespace CountMyCode.Models
 
                 if (item.ItemType == Status.File)
                 {
-                    if (ignoreNonTextFiles)
-                    {
-                        if (FileUtils.IsBinary(item.Path))
-                        {
-                            item.Status = Status.Ignored;
-                            continue;
-                        }
-                    }
-
                     files.Add(item);
                 }
                 else if (item.ItemType == Status.Folder)
                 {
-                    files.AddRange(item.GetFiles(ignoreNonTextFiles));
+                    files.AddRange(item.GetFiles());
                 }
             }
 
@@ -422,7 +443,7 @@ namespace CountMyCode.Models
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Running the audit. Counting your code. Please wait...");
 
-            List<FileItem> files = GetFiles(Options[(int)OptionIndexes.IgnoreNonTextFiles]);
+            List<FileItem> files = GetFiles();
             
             List<Task<AuditStats>> auditTasks = new List<Task<AuditStats>>();
             List<FileInfo> fileInfos = new List<FileInfo>();
@@ -509,6 +530,29 @@ namespace CountMyCode.Models
             finalAudit.WhiteSpaceVs = (int)(whiteSpace * 100);
 
             return finalAudit;
+        }
+
+        internal void FilterItems(bool? ignoreNonTextItems = null)
+        {
+            LoadChildren(true);
+
+            ignoreNonTextItems ??= Options[(int)OptionIndexes.IgnoreNonTextFiles];
+
+            foreach (FileItem item in Children)
+            {
+                if (ignoreNonTextItems.Value)
+                {
+                    if (item.Status == Status.Folder)
+                    {
+                        item.FilterItems(ignoreNonTextItems);
+                    }
+                    else if (item.Status == Status.File)
+                    {
+                        if (FileUtils.IsBinary(item.Path))
+                            item.Status = Status.Ignored;
+                    }
+                }
+            }
         }
     }
 

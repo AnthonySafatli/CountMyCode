@@ -38,6 +38,8 @@ namespace CountMyCode
             if (menuResult == null)
                 return false;
 
+            _initialFolder.FilterItems();
+
             _initialFolder.AddExtensions(_programmingExtensions);
 
             AuditStats stats = await _initialFolder.RunAudit();
