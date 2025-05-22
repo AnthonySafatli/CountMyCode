@@ -38,11 +38,17 @@ namespace CountMyCode
                 if (menuResult == null)
                     return false;
 
+                LoadingScreen();
+
                 _initialFolder.FilterItems();
+
+                LoadingScreen();
 
                 bool extensionsResult = _initialFolder.RunExtensionsMenu();
                 if (!extensionsResult)
                     continue;
+
+                LoadingScreen();
 
                 AuditStats stats = await AuditUtil.RunAudit(_initialFolder);
 
@@ -52,6 +58,12 @@ namespace CountMyCode
             }
 
             return true;
+        }
+
+        internal void LoadingScreen()
+        {
+            Console.Clear();
+            Console.WriteLine("Loading...");
         }
 
         internal void LaunchAudit(AuditStats audit, int portNumber)

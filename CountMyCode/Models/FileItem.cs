@@ -24,7 +24,7 @@ namespace CountMyCode.Models
         {
             get
             {
-                return System.IO.Path.GetFileName(Path);
+                return System.IO.Path.GetFileName(Path).Replace('\\', '/');
             }
         }
 
@@ -38,7 +38,7 @@ namespace CountMyCode.Models
                     lineageFileItem = lineageFileItem.Parent;
                 }
 
-                return Path.Remove(0, lineageFileItem?.Path.Length ?? 0);
+                return Path.Remove(0, lineageFileItem?.Path.Length ?? 0).Replace('\\', '/');
             }
         }
 

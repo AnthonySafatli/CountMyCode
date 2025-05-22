@@ -193,7 +193,7 @@ namespace CountMyCode.Models
             Console.WriteLine("This extension is used in these files:");
             Console.WriteLine();
 
-            var filesWithExtension = files.Where(x => System.IO.Path.GetExtension(x.Path) == extension);
+            var filesWithExtension = files.Where(x => Path.GetExtension(x.Path) == extension);
 
             int amount = 5;
             files = filesWithExtension.Take(amount).ToList();
@@ -217,7 +217,9 @@ namespace CountMyCode.Models
             if (previousName != null)
             {
                 Console.WriteLine();
-                Console.WriteLine($"Previously entered language name: '{previousName}' | Press enter to skip or type to replace.");
+                Console.Write("Previously entered language name: ");
+                Console.Write(previousName);
+                Console.WriteLine("| Press enter to skip or type to replace.");
             }
 
             return InputUtils.GetInput(true);
@@ -265,7 +267,7 @@ namespace CountMyCode.Models
                         continue;
 
                     stagedNames.TryGetValue(i, out string? previousName);
-                    string languageName = GetLanguageName(extension, files, $"[{i + 1} / {extensions.Count}]", previousName);
+                    string languageName = GetLanguageName(extension, files, $"[{i + 1} / {extensions.Count}] ", previousName);
 
                     if (languageName.ToLower() == "!forget")
                         return null;

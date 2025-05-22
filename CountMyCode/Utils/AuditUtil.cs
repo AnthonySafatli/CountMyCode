@@ -35,6 +35,7 @@ namespace CountMyCode.Utils
                 AuditStats audit = auditResults[i];
                 FileInfo fileInfo = fileInfos[i];
 
+                string displayPath = fileItem.DisplayPath.Substring(auditedFolder.DisplayPath.Length);
                 double fileSize = fileInfo.Length / 1024.0; // Convert to KB
 
                 // Get file related items
@@ -52,44 +53,43 @@ namespace CountMyCode.Utils
                 finalAudit.WhiteSpaceVs += audit.WhiteSpaceVs;
 
                 // Get records
-
                 if (fileSize > finalAudit.LargestByKb)
                 {
                     finalAudit.LargestByKb = fileSize;
-                    finalAudit.LargestByKbFile = fileItem.DisplayPath;
+                    finalAudit.LargestByKbFile = displayPath;
                 }
 
                 if (audit.Characters > finalAudit.LargestByChars)
                 {
                     finalAudit.LargestByChars = audit.Characters;
-                    finalAudit.LargestByCharsFile = fileItem.DisplayPath;
+                    finalAudit.LargestByCharsFile = displayPath;
                 }
 
                 if (audit.LinesOfCode > finalAudit.LargestByLines)
                 {
                     finalAudit.LargestByLines = audit.LinesOfCode;
-                    finalAudit.LargestByLinesFile = fileItem.DisplayPath;
+                    finalAudit.LargestByLinesFile = displayPath;
                 }
 
                 double density = (double)audit.Characters / audit.LinesOfCode;
                 if (density > finalAudit.HighestDensity)
                 {
                     finalAudit.HighestDensity = density;
-                    finalAudit.HighestDensityFile = fileItem.DisplayPath;
+                    finalAudit.HighestDensityFile = displayPath;
                 }
 
                 int daysFromLastEdit = (int)(DateTime.Now - fileInfo.LastWriteTime).TotalDays;
                 if (daysFromLastEdit > finalAudit.OldestFileDays)
                 {
                     finalAudit.OldestFileDays = daysFromLastEdit;
-                    finalAudit.OldestFile = fileItem.DisplayPath;
+                    finalAudit.OldestFile = displayPath;
                 }
 
                 int daysFromCreation = (int)(DateTime.Now - fileInfo.CreationTime).TotalDays;
                 if (daysFromCreation > finalAudit.NewestFileDays)
                 {
                     finalAudit.NewestFileDays = daysFromCreation;
-                    finalAudit.NewestFile = fileItem.DisplayPath;
+                    finalAudit.NewestFile = displayPath;
                 }
             }
 

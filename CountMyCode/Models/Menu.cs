@@ -199,6 +199,7 @@ namespace CountMyCode.Models
 
             Console.ForegroundColor = foregroundColour;
 
+            Console.Write(isSelected && isActive ? "> " : "  ");
             Console.Write($"[{status}] ");
             Console.Write(new string(' ', statusPadding));
 
@@ -224,8 +225,8 @@ namespace CountMyCode.Models
             if (FileItem.Options.Count > 0)
                 Console.WriteLine($"TAB         | {(IsInOptionsMenu ? "Exit" : "Enter")} options menu");
 
-            Console.WriteLine("ENTER      | Run the audit");
-            Console.WriteLine("ESC        | Choose another folder");
+            Console.WriteLine("ENTER       | Run the audit");
+            Console.WriteLine("ESC         | Choose another folder");
         }
     }
 }
