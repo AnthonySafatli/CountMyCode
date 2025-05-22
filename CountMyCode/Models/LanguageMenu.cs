@@ -10,7 +10,7 @@ namespace CountMyCode.Models
     internal class LanguageMenu
     {
         internal Dictionary<string, string> ProgrammingExtensions { get; set; }
-        internal FileItem FileItem { get; set; }
+        internal FileItem FileItem { get; set; } 
 
         public LanguageMenu(FileItem fileItem)
         {
