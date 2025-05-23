@@ -12,6 +12,7 @@ namespace CountMyCode.Models
         internal FileItem FileItem { get; set; }
         internal bool IsInOptionsMenu { get; set; } = false;
         internal FileItem? SelectedFileItem { get; set; } = null;
+        internal int ScrollStartIndex { get; set; } = 0;
         internal int SelectedOptionIndex { get; set; } = 0;
 
         public Menu(FileItem fileItem)
@@ -134,17 +135,55 @@ namespace CountMyCode.Models
             Console.WriteLine(FileItem.Path);
             Console.WriteLine();
         }
+
         private void RenderFileItems()
         {
-            foreach (FileItem item in FileItem.Children)
-            {
-                RenderFileItem(item);
-            }
-
             if (FileItem.Children.Count == 0)
             {
                 Console.ForegroundColor = IsInOptionsMenu ? ConsoleColor.DarkGray : ConsoleColor.White;
                 Console.WriteLine("No items found.");
+                return;
+            }
+
+            int currentIndex = SelectedFileItem == null ? 0 : FileItem.Children.IndexOf(SelectedFileItem);
+            int displayAreaHeight = Console.WindowHeight - (13 + FileItem.Options.Count);
+            int totalItems = FileItem.Children.Count;
+
+            // Adjust ScrollStartIndex if currentIndex is out of view
+            if (currentIndex < ScrollStartIndex)
+            {
+                ScrollStartIndex = currentIndex;
+            }
+            else if (currentIndex >= ScrollStartIndex + displayAreaHeight)
+            {
+                ScrollStartIndex = currentIndex - displayAreaHeight + 1;
+            }
+
+            // Clamp ScrollStartIndex to prevent overflow
+            if (ScrollStartIndex > totalItems - displayAreaHeight)
+            {
+                ScrollStartIndex = Math.Max(0, totalItems - displayAreaHeight);
+            }
+
+            // Show top ellipsis if not at the start
+            if (ScrollStartIndex > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("  ...");
+            }
+
+            // Render visible items
+            int linesRendered = 0;
+            for (int i = ScrollStartIndex; i < totalItems && linesRendered < displayAreaHeight; i++, linesRendered++)
+            {
+                RenderFileItem(FileItem.Children[i]);
+            }
+
+            // Show bottom ellipsis if not at the end
+            if (ScrollStartIndex + linesRendered < totalItems)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("  ...");
             }
         }
 
@@ -215,18 +254,18 @@ namespace CountMyCode.Models
             Console.WriteLine();
 
             if ((!IsInOptionsMenu && FileItem.Children.Count > 1) || (IsInOptionsMenu && FileItem.Options.Count > 1))
-                Console.WriteLine("UP / DOWN   | Navigate up or down");
+                Console.WriteLine("  UP / DOWN   | Navigate up or down");
             if (!IsInOptionsMenu && FileItem.Children.Any(x => x.ItemType == Status.Folder))
-                Console.WriteLine("RIGHT       | Enter a folder to view its contents");
+                Console.WriteLine("  RIGHT       | Enter a folder to view its contents");
             if (FileItem.Parent != null)
-                Console.WriteLine("LEFT        | Go back to the folders parents");
+                Console.WriteLine("  LEFT        | Go back to the folders parents");
             if ((!IsInOptionsMenu && FileItem.Children.Count > 0) || (IsInOptionsMenu && FileItem.Options.Count > 0))
-                Console.WriteLine("SPACE       | " + (IsInOptionsMenu ? "Toggle an option" : "Toggle if an item is ignored by the audit"));
+                Console.WriteLine("  SPACE       | " + (IsInOptionsMenu ? "Toggle an option" : "Toggle if an item is ignored by the audit"));
             if (FileItem.Options.Count > 0)
-                Console.WriteLine($"TAB         | {(IsInOptionsMenu ? "Exit" : "Enter")} options menu");
+                Console.WriteLine($"  TAB         | {(IsInOptionsMenu ? "Exit" : "Enter")} options menu");
 
-            Console.WriteLine("ENTER       | Run the audit");
-            Console.WriteLine("ESC         | Choose another folder");
+            Console.WriteLine("  ENTER       | Run the audit");
+            Console.WriteLine("  ESC         | Choose another folder");
         }
     }
 }
