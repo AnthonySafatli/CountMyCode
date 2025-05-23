@@ -8,6 +8,7 @@ namespace CountMyCode
         static async Task Main(string[] args)
         {
             int portNumber = 5000;
+            while (SocketUtils.IsPortInUse(portNumber)) portNumber++;
 
             try
             {
