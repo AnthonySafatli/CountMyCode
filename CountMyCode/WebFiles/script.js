@@ -75,7 +75,25 @@ async function init() {
 
     // Pie Charts
 
-    /* ... */
+    const ctx = document.getElementById('files-by-language').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Apples', 'Bananas', 'Cherries'],
+            datasets: [{
+                data: [10, 20, 30],
+                backgroundColor: ['red', 'yellow', 'pink']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
 
     // VS
 
