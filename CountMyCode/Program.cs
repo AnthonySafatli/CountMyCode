@@ -47,8 +47,25 @@ internal class Program
         }
         catch (IOException e)
         {
+            Console.Clear();
             Console.WriteLine("FATAL: An error occurred while accessing the file system!\n");
             Console.WriteLine(e.Message);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            Console.Clear();
+            Console.WriteLine("FATAL: An error occurred while accessing the file system!\n");
+            Console.WriteLine(e.Message);
+        }
+        catch (Exception e)
+        {
+            Console.Clear();
+            Console.WriteLine("FATAL: An unexpected error occurred!\n");
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            Console.ResetColor();
         }
     }
 }
