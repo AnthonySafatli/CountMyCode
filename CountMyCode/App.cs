@@ -63,6 +63,7 @@ namespace CountMyCode
         internal void LoadingScreen()
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Loading...");
         }
 

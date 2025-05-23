@@ -48,3 +48,24 @@ h4 {
 .counting-divs > div > div {
     overflow-x: auto;
 }
+
+#languages-legend {
+    position: sticky;
+    top: 0;
+    align-self: start; 
+    height: fit-content;
+}
+
+.colour-preview {
+    height: 30px;
+    width: 30px;
+    border: 1.5px solid transparent;
+    border-image: linear-gradient(35deg, #57b9b3, rgb(79, 170, 221));
+    border-image-slice: 1;
+}
+
+canvas {
+    max-height: 300px;
+    max-width: 300px;
+}
+

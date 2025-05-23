@@ -90,8 +90,23 @@
         <section class="mb-5">
             <div class="container">
                 <div class="row">
-                    <div class="col-6">
-                        <canvas id="files-by-language"></canvas>
+                    <div class="col-5">
+                        <div class="d-flex align-items-center flex-column">
+                            <h4>Files By Language</h4>
+                            <canvas id="files-by-language"></canvas>
+                        </div>
+                        
+                        <div class="d-flex align-items-center flex-column mt-4">
+                            <h4>Lines By Language</h4>
+                            <canvas id="lines-by-language"></canvas>
+                        </div>
+                        
+                        <div class="d-flex align-items-center flex-column mt-4">
+                            <h4>Characters By Language</h4>
+                            <canvas id="characters-by-language"></canvas>
+                        </div>
+                    </div>
+                    <div id="languages-legend" class="col-7 px-5">
                     </div>
                 </div>
             </div>

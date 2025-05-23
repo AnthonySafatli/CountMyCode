@@ -1,6 +1,7 @@
 ﻿using CountMyCode.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace CountMyCode.Utils
 
             foreach (FileItem file in files)
             {
-                auditTasks.Add(ProcessFileAsync(file.Path));
+                auditTasks.Add(ProcessFileAsync(file.Path, auditedFolder.LanguageMenu?.ProgrammingExtensions));
                 fileInfos.Add(new FileInfo(file.Path));
             }
 
@@ -51,6 +52,43 @@ namespace CountMyCode.Utils
 
                 finalAudit.EmptyLinesVs += audit.EmptyLinesVs;
                 finalAudit.WhiteSpaceVs += audit.WhiteSpaceVs;
+
+                // Get language related items
+
+                string language = audit.FilesByLanguage.First().Name;
+                
+                LanguageStats? filesByLanguage = finalAudit.FilesByLanguage.FirstOrDefault(x => x.Name == language);
+                if (filesByLanguage == null)
+                {
+                    filesByLanguage = new LanguageStats
+                    {
+                        Name = language,
+                    };
+                    finalAudit.FilesByLanguage.Add(filesByLanguage);
+                }
+                filesByLanguage.Amount += audit.FilesByLanguage.First().Amount;
+
+                LanguageStats? linesByLanguage = finalAudit.LinesByLanguage.FirstOrDefault(x => x.Name == language);
+                if (linesByLanguage == null)
+                {
+                    linesByLanguage = new LanguageStats
+                    {
+                        Name = language,
+                    };
+                    finalAudit.LinesByLanguage.Add(linesByLanguage);
+                }
+                linesByLanguage.Amount += audit.LinesByLanguage.First().Amount;
+
+                LanguageStats? charactersByLanguage = finalAudit.CharactersByLanguage.FirstOrDefault(x => x.Name == language);
+                if (charactersByLanguage == null)
+                {
+                    charactersByLanguage = new LanguageStats
+                    {
+                        Name = language,
+                    };
+                    finalAudit.CharactersByLanguage.Add(charactersByLanguage);
+                }
+                charactersByLanguage.Amount += audit.CharactersByLanguage.First().Amount;
 
                 // Get records
                 if (fileSize > finalAudit.LargestByKb)
@@ -95,6 +133,16 @@ namespace CountMyCode.Utils
 
             finalAudit.Languages = files.Select(x => System.IO.Path.GetExtension(x.Path)).Distinct().Count();
 
+            for (int i = 0; i < finalAudit.FilesByLanguage.Count; i++)
+            {
+                Color randomColour = ColourUtils.GetRandomHSBColor();
+                string colourHex = ColourUtils.ToHex(randomColour);
+
+                finalAudit.FilesByLanguage[i].Colour = colourHex;
+                finalAudit.LinesByLanguage[i].Colour = colourHex;
+                finalAudit.CharactersByLanguage[i].Colour = colourHex;
+            }
+
             double emptyLines = (double)finalAudit.EmptyLinesVs / finalAudit.LinesOfCode;
             finalAudit.EmptyLinesVs = (int)(emptyLines * 100);
 
@@ -104,14 +152,31 @@ namespace CountMyCode.Utils
             return finalAudit;
         }
 
-        internal static async Task<AuditStats> ProcessFileAsync(string path)
+        internal static async Task<AuditStats> ProcessFileAsync(string path, Dictionary<string, string> languages)
         {
             AuditStats audit = new AuditStats();
+
+            string? language = languages.GetValueOrDefault(Path.GetExtension(path));
+            language ??= "Other";
+
+            LanguageStats languageStat = new LanguageStats
+            {
+                Name = language
+            };
+
+            audit.FilesByLanguage.Add(languageStat.Clone());
+            audit.LinesByLanguage.Add(languageStat.Clone());
+            audit.CharactersByLanguage.Add(languageStat.Clone());
+
+            audit.FilesByLanguage.First().Amount++;
 
             await foreach (string line in FileUtils.ReadLinesAsync(path))
             {
                 audit.LinesOfCode++;
                 audit.Characters += line.Length;
+
+                audit.LinesByLanguage.First().Amount++;
+                audit.CharactersByLanguage.First().Amount += line.Length;
 
                 if (line.Contains("TODO", StringComparison.OrdinalIgnoreCase)
                     || line.Contains("FIXEME", StringComparison.OrdinalIgnoreCase)

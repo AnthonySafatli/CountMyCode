@@ -27,6 +27,28 @@ function animateNumber(targetNumber, element, baseDuration = 1000, padLength = 3
     requestAnimationFrame(step);
 }
 
+function initChart(canvasId, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: data.map(x => x.name),
+            datasets: [{
+                data: data.map(x => x.amount),
+                backgroundColor: data.map(x => x.colour)
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
 async function init() {
 
     // Fetch Data
@@ -75,24 +97,27 @@ async function init() {
 
     // Pie Charts
 
-    const ctx = document.getElementById('files-by-language').getContext('2d');
+    initChart('files-by-language', data.filesByLanguage)
+    initChart('lines-by-language', data.linesByLanguage)
+    initChart('characters-by-language', data.charactersByLanguage)
 
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Apples', 'Bananas', 'Cherries'],
-            datasets: [{
-                data: [10, 20, 30],
-                backgroundColor: ['red', 'yellow', 'pink']
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
+    const languageLengend = document.getElementById('languages-legend');
+    data.filesByLanguage.forEach(x => {
+        const containerDiv = document.createElement('div')
+        containerDiv.classList.add('d-flex', 'align-items-center', 'mb-2', 'gap-3')
+
+        const colourDiv = document.createElement('div')
+        colourDiv.classList.add('colour-preview')
+        colourDiv.style.backgroundColor = x.colour;
+
+        const nameItem = document.createElement('p')
+        nameItem.classList.add('mb-0', 'fs-2')
+        nameItem.textContent = x.name;
+
+        containerDiv.appendChild(colourDiv)
+        containerDiv.appendChild(nameItem)
+
+        languageLengend.appendChild(containerDiv)
     });
 
     // VS
