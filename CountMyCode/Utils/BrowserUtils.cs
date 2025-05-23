@@ -6,35 +6,34 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CountMyCode.Utils
+namespace CountMyCode.Utils;
+
+public static class BrowserUtils
 {
-    public static class BrowserUtils
+    public static void OpenUrl(string url)
     {
-        public static void OpenUrl(string url)
+        try
         {
-            try
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    Process.Start("xdg-open", url);
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    Process.Start("open", url);
-                }
-                else
-                {
-                    throw new PlatformNotSupportedException("Operating system not supported");
-                }
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
-            catch (Exception ex)
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Console.WriteLine("Could not open the browser: " + ex.Message);
+                Process.Start("xdg-open", url);
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+            else
+            {
+                throw new PlatformNotSupportedException("Operating system not supported");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Could not open the browser: " + ex.Message);
         }
     }
 }

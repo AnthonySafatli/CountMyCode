@@ -6,20 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CountMyCode.Controllers
+namespace CountMyCode.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuditDataController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuditDataController : ControllerBase
+    private readonly AuditStats _auditStats;
+
+    public AuditDataController(AuditStats auditStats)
     {
-        private readonly AuditStats _auditStats;
-
-        public AuditDataController(AuditStats auditStats)
-        {
-            _auditStats = auditStats;
-        }
-
-        [HttpGet("")]
-        public IActionResult Get() => Ok(_auditStats);
+        _auditStats = auditStats;
     }
+
+    [HttpGet("")]
+    public IActionResult Get() => Ok(_auditStats);
 }
