@@ -1,4 +1,4 @@
-# CountMyCode
+# 📊 CountMyCode
 
 A command-line application that analyzes a code repository and provides an audit complete with charts and statistics about the code in your project.
 
