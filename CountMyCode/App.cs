@@ -65,7 +65,7 @@ internal class App
         {
             Args = Array.Empty<string>(),
             ApplicationName = System.Reflection.Assembly.GetExecutingAssembly().FullName,
-            ContentRootPath = Directory.GetCurrentDirectory(),
+            ContentRootPath = AppContext.BaseDirectory,
         });
 
         // Configure logging
@@ -77,7 +77,7 @@ internal class App
 
         var app = builder.Build();
 
-        var staticFilePath = Path.Combine(Directory.GetCurrentDirectory(), "WebFiles");
+        var staticFilePath = Path.Combine(AppContext.BaseDirectory, "WebFiles");
 
         app.UseStaticFiles(new StaticFileOptions
         {
