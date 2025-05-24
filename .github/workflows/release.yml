@@ -44,7 +44,7 @@ jobs:
         run: |
           cd publish
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            pwsh -Command "Compress-Archive -Path * -DestinationPath ../app-${{ matrix.rid }}.zip"
+            pwsh -Command "Compress-Archive -Path * -DestinationPath ../countmycode-${{ matrix.rid }}.zip"
           else
             tar -czf ../app-${{ matrix.rid }}.tar.gz *
           fi
