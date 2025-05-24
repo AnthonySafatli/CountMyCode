@@ -46,13 +46,13 @@ jobs:
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             pwsh -Command "Compress-Archive -Path * -DestinationPath ../countmycode-${{ matrix.rid }}.zip"
           else
-            tar -czf ../app-${{ matrix.rid }}.tar.gz *
+            tar -czf ../countmycode-${{ matrix.rid }}.tar.gz *
           fi
 
 
       - name: Upload artifact to release
         uses: softprops/action-gh-release@v2
         with:
-          files: app-${{ matrix.rid }}.${{ matrix.ext }}
+          files: countmycode-${{ matrix.rid }}.${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
