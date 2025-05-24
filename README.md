@@ -16,6 +16,16 @@ A command-line application that analyzes a code repository and provides an audit
 3. If there are unrecognized file types, assign them names.
 4. View your audit results!
 
+## Building
+
+If you want to build the project yourself, run the command
+
+```
+dotnet publish -c Release -r <your-os> --self-contained true -p:PublishSingleFile=true -o publish
+```
+
+Your executable will be located in `/CountYourCode/Publish`
+
 ## License
 
 This codebase uses the GNU GPL v3.0 License. More information [here](https://github.com/AnthonySafatli/Pixart/blob/main/LICENSE.txt).
